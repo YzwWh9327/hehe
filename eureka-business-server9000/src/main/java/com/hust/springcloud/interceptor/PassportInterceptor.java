@@ -1,6 +1,9 @@
 package com.hust.springcloud.interceptor;
 
+import cn.hutool.json.JSONObject;
+import com.hust.springcloud.common.ResponseEnum;
 import com.hust.springcloud.entity.LoginTicket;
+import com.hust.springcloud.exception.Assert;
 import com.hust.springcloud.mapper.TicketMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -10,6 +13,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.util.Date;
 
 
@@ -26,23 +30,34 @@ public class PassportInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         String ticket = null;
-        if (httpServletRequest.getCookies() != null) {
-            for (Cookie cookie : httpServletRequest.getCookies()) {
-                if (cookie.getName().equals("ticket")) {
-                    ticket = cookie.getValue();
-                    break;
-                }
-            }
-        }
-
+        ticket = httpServletRequest.getHeader("ticket");
         if (ticket != null) {
             Integer ticketId = ticketMapper.selectByTicketInfo(ticket);
             LoginTicket loginTicket = ticketMapper.selectById(ticketId);
-            if (loginTicket == null || loginTicket.getExpired().before(new Date()) || loginTicket.getDeleted() !=null) {
+            if (loginTicket != null && loginTicket.getExpired().after(new Date()) && loginTicket.getDeleted().intValue()==0) {
                 return true;
             }
         }
-        return true;
+        toFontJson(httpServletResponse);
+        return false;
+    }
+    private void toFontJson(HttpServletResponse response) {
+        PrintWriter writer = null;
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json; charset=utf-8");
+        JSONObject res = new JSONObject();
+        res.put("code",-201);
+        res.put("msg","未登录");
+        try {
+            writer = response.getWriter();
+            writer.print(res.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (writer != null)
+                writer.close();
+        }
     }
 
     @Override

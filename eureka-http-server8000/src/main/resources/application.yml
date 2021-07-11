@@ -17,7 +17,7 @@ eureka:
 ribbon:
   ReadTimeout: 5000
   ConnectTimeout: 5000
-logging:
-  level:
-    com.hust.springcloud.service.AccountFeignService: debug
+#logging:
+#  level:
+#    com.hust.springcloud.service.AccountFeignService: debug
 
