@@ -1,0 +1,23 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: eureka-http-server
+  main:
+    allow-bean-definition-overriding: true
+
+#eureka配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://www.eureka7000.com:7000/eureka/
+
+#设置feign客户端超时时间
+ribbon:
+  ReadTimeout: 5000
+  ConnectTimeout: 5000
+logging:
+  level:
+    com.hust.springcloud.service.AccountFeignService: debug
+

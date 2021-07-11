@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hust.springcloud.mapper.AccountMapper">
+    <insert id="saveBatch">
+        insert into tab_account(account_name,name,gender,create_time,update_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.accountName},#{item.name},#{item.gender},#{item.createTime},#{item.updateTime})
+        </foreach>
+        ON DUPLICATE key update
+        name=values(name),
+        gender=values(gender),
+        update_time=values(update_time)
+    </insert>
+
+    <select id="selectByAccountName" resultType="com.hust.springcloud.entity.AccountVO">
+        select
+        account_name,name,gender
+        from tab_account
+        where
+        account_name = #{accountName}
+    </select>
+
+    <select id="selectByCreateTimeInterval" resultType="com.hust.springcloud.entity.AccountDownloadVO">
+        select
+            account_name,name,gender,create_time,update_time
+        from tab_account
+        where
+            create_time
+        between #{minCreateTime} AND #{maxCreateTime}
+        ORDER BY
+            create_time DESC 
+    </select>
+</mapper>
