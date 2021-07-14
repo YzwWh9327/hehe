@@ -26,6 +26,14 @@ spring:
             inline:
               sharding-column: account_name
               algorithm-expression: tab_account_$->{Long.parseLong(account_name) % 10}
+  # redis配置
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password:
+    timeout: 1000
+
 ##mybatis日志
 mybatis-plus:
   configuration:
