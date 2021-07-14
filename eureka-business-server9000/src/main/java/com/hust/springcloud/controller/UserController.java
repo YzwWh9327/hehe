@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
@@ -21,6 +20,7 @@ import java.util.Map;
 @RestController
 @Slf4j
 @RequestMapping("/user")
+@CrossOrigin
 public class UserController {
 
     @Resource
