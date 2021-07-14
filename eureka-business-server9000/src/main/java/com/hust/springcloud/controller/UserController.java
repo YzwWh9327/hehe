@@ -46,35 +46,16 @@ public class UserController {
         Assert.notEmpty(password, ResponseEnum.PASSWORD_NULL_ERROR);
 
         Map<String, Object> map = userService.login(userVO);
-//        if (map.containsKey("ticket")) {
-//            Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
-//            cookie.setPath("/");
-//            cookie.setMaxAge(3600*24);
-//            response.addCookie(cookie);
-//            return Result.ok().data("user",(User)map.get("user"));
-//        }
-        response.addHeader("ticket",map.get("ticket").toString());
-        return Result.ok().data("user",(User)map.get("user"));
+        String ticket = map.get("ticket").toString();
+        return Result.ok().data("ticket",ticket);
     }
 
-//    @GetMapping("/logout")
-//    public Result logout(@CookieValue(value = "ticket",required = false) String ticket){
-//        userService.logout(ticket);
-//        return Result.ok().message("登出成功");
-//    }
     @GetMapping("/logout")
     public Result logout(@RequestHeader(value = "ticket",required = false) String ticket){
         userService.logout(ticket);
         return Result.ok().message("登出成功");
     }
-//
-//    @PutMapping("/modify")
-//    public Result modify(@CookieValue(value = "ticket",required = false) String ticket,
-//                         @RequestParam("nickname")String nickname,
-//                         @RequestParam("picture")String picture){
-//        User user = userService.modify(ticket,nickname,picture);
-//        return Result.ok().data("修改信息",user);
-//    }
+
     @PutMapping("/modify")
     public Result modify(@RequestHeader(value = "ticket",required = false) String ticket,
                          @RequestParam("nickname")String nickname,
