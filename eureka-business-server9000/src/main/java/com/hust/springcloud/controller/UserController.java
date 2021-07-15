@@ -2,11 +2,11 @@ package com.hust.springcloud.controller;
 
 import com.hust.springcloud.common.ResponseEnum;
 import com.hust.springcloud.common.Result;
-import com.hust.springcloud.entity.LoginTicket;
 import com.hust.springcloud.entity.User;
 import com.hust.springcloud.entity.UserVO;
 import com.hust.springcloud.exception.Assert;
 import com.hust.springcloud.mapper.TicketMapper;
+import com.hust.springcloud.service.TicketService;
 import com.hust.springcloud.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -27,6 +28,8 @@ public class UserController {
     private UserService userService;
     @Resource
     private TicketMapper ticketMapper;
+    @Resource
+    private TicketService ticketService;
 
     @PostMapping("/login")
     public Result login(@RequestBody UserVO userVO,
@@ -34,11 +37,16 @@ public class UserController {
                         HttpServletResponse response){
         String token = request.getHeader("ticket");
         if(token!=null){
-            Integer ticketId = ticketMapper.selectByTicketInfo(token);
-            LoginTicket loginTicket = ticketMapper.selectById(ticketId);
-            if (loginTicket != null && loginTicket.getExpired().after(new Date()) && loginTicket.getDeleted().intValue()==0) {
+//            Integer ticketId = ticketMapper.selectByTicketInfo(token);
+//            LoginTicket loginTicket = ticketMapper.selectById(ticketId);
+//            if (loginTicket != null && loginTicket.getExpired().after(new Date()) && loginTicket.getDeleted().intValue()==0) {
+//                return Result.ok().message("登录成功~~~");
+//            }
+            Integer ticketId = ticketService.selectByTicketInfo(token);
+            if (ticketId!=null){
                 return Result.ok().message("登录成功~~~");
             }
+
         }
         String username = userVO.getUsername();
         String password = userVO.getPassword();
@@ -47,7 +55,10 @@ public class UserController {
 
         Map<String, Object> map = userService.login(userVO);
         String ticket = map.get("ticket").toString();
-        return Result.ok().data("ticket",ticket);
+        Map<String,Object> resMap = new HashMap<>();
+        resMap.put("user",(User)map.get("user"));
+        resMap.put("ticket",ticket);
+        return Result.ok().data("body",resMap);
     }
 
     @GetMapping("/logout")

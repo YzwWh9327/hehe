@@ -1,7 +1,8 @@
-package com.hust.springcloud.exception;
+package com.hust.springcloud.handler;
 
 import com.hust.springcloud.common.ResponseEnum;
 import com.hust.springcloud.common.Result;
+import com.hust.springcloud.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
@@ -43,6 +45,16 @@ public class UnifiedExceptionHandler {
     public Result handleBadSqlGrammarException(BadSqlGrammarException e){
         log.error(e.getMessage(), e);
         return Result.setResult(ResponseEnum.BAD_SQL_GRAMMAR_ERROR);
+    }
+
+    /**
+     *
+     * 特定异常
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public Result handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e){
+        log.error(e.getMessage(), e);
+        return Result.setResult(ResponseEnum.FILE_SIZE_TOO_BIG);
     }
 
     /**

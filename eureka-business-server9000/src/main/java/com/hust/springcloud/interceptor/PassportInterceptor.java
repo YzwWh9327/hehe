@@ -2,9 +2,11 @@ package com.hust.springcloud.interceptor;
 
 import cn.hutool.json.JSONObject;
 import com.hust.springcloud.common.ResponseEnum;
+import com.hust.springcloud.common.Result;
 import com.hust.springcloud.entity.LoginTicket;
 import com.hust.springcloud.exception.Assert;
 import com.hust.springcloud.mapper.TicketMapper;
+import com.hust.springcloud.service.TicketService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,15 +28,22 @@ public class PassportInterceptor implements HandlerInterceptor {
     @Resource
     private TicketMapper ticketMapper;
 
+    @Resource
+    private TicketService ticketService;
+
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         String ticket = null;
         ticket = httpServletRequest.getHeader("ticket");
         if (ticket != null) {
-            Integer ticketId = ticketMapper.selectByTicketInfo(ticket);
-            LoginTicket loginTicket = ticketMapper.selectById(ticketId);
-            if (loginTicket != null && loginTicket.getExpired().after(new Date()) && loginTicket.getDeleted().intValue()==0) {
+//            Integer ticketId = ticketMapper.selectByTicketInfo(ticket);
+//            LoginTicket loginTicket = ticketMapper.selectById(ticketId);
+//            if (loginTicket != null && loginTicket.getExpired().after(new Date()) && loginTicket.getDeleted().intValue()==0) {
+//                return true;
+//            }
+            Integer ticketId = ticketService.selectByTicketInfo(ticket);
+            if (ticketId!=null){
                 return true;
             }
         }

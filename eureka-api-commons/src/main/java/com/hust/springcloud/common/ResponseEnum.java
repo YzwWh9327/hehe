@@ -39,6 +39,7 @@ public enum ResponseEnum {
     ACCOUNT_INFO_NULL(-304,"账户信息不存在"),
     MIN_CREATE_DATE_NULL(-305,"传入最小创建时间不能为空"),
     MAX_CREATE_DATE_NULL(-306,"传入最大创建时间不能为空"),
+    FILE_SIZE_TOO_BIG(-307,"上传文件过大"),
     ;
 
     // 响应状态码

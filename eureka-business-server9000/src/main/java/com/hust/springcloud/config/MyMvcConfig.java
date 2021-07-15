@@ -17,6 +17,7 @@ public class MyMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(passportInterceptor)
                 .addPathPatterns("/user/*")
+                .addPathPatterns("/account/*")
                 .excludePathPatterns("/user/login");
     }
 

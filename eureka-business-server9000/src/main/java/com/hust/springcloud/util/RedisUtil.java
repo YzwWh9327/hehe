@@ -3,6 +3,7 @@ package com.hust.springcloud.util;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
@@ -58,6 +59,15 @@ public final class RedisUtil {
             e.printStackTrace();
             return false;
         }
+    }
+    /**
+     * 删除缓存
+     * @param key 可以传一个值 或多个
+     */
+    @SuppressWarnings("unchecked")
+    public Boolean del(String key) {
+        Boolean res = redisTemplate.delete(key);
+        return res;
     }
 
 }
